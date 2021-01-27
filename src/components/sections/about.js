@@ -146,11 +146,10 @@ const About = () => {
             <p>I enjoy creating highly scalable, robust backend systems.</p>
 
             <p>
-              Shortly after graduating from{' '}
-              <a href="https://www.bits-pilani.ac.in/">BITS Pilani in 2019</a>, I joined the
-              engineering team at <a href="https://www.razorpay.com">Razorpay</a> where I work on a
-              wide variety of interesting and meaningful projects on a daily basis as an automation
-              engineer.
+              Shortly after graduating from <a href="https://www.bits-pilani.ac.in/">BITS Pilani</a>{' '}
+              in 2019, I joined the engineering team at{' '}
+              <a href="https://www.razorpay.com">Razorpay</a> where I work on a wide variety of
+              interesting and meaningful projects on a daily basis as an automation engineer.
             </p>
 
             <p>
