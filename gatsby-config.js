@@ -1,4 +1,9 @@
 const config = require('./src/config');
+const activeEnv = process.env.GATSBY_ACTIVE_ENV || process.env.NODE_ENV;
+
+require('dotenv').config({
+  path: `.env.${activeEnv}`,
+});
 
 module.exports = {
   siteMetadata: {
@@ -16,6 +21,12 @@ module.exports = {
     `gatsby-transformer-sharp`,
     `gatsby-plugin-sitemap`,
     `gatsby-plugin-robots-txt`,
+    {
+      resolve: `gatsby-source-wordpress-experimental`,
+      options: {
+        url: process.env.WPGRAPHQL_URL,
+      },
+    },
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
