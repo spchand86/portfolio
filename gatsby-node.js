@@ -7,29 +7,31 @@
 const path = require('path');
 const _ = require('lodash');
 
+const createTags = async ({ createPage, tagData, tagTemplate }) =>
+  Promise.all(
+    // Make tag pages
+    tagData.forEach(nodeTag =>
+      createPage({
+        path: `/pensieve/tags/${_.kebabCase(nodeTag.node.name)}/`,
+        component: tagTemplate,
+        context: {
+          tag: nodeTag.node.name,
+        },
+      }),
+    ),
+  );
+
 exports.createPages = async ({ actions, graphql, reporter }) => {
   const { createPage } = actions;
-  const postTemplate = path.resolve(`src/templates/post.js`);
   const tagTemplate = path.resolve('src/templates/tag.js');
 
   const result = await graphql(`
     {
-      postsRemark: allMarkdownRemark(
-        filter: { fileAbsolutePath: { regex: "/posts/" } }
-        sort: { order: DESC, fields: [frontmatter___date] }
-        limit: 1000
-      ) {
+      wpTags: allWpTag {
         edges {
           node {
-            frontmatter {
-              slug
-            }
+            name
           }
-        }
-      }
-      tagsGroup: allMarkdownRemark(limit: 2000) {
-        group(field: frontmatter___tags) {
-          fieldValue
         }
       }
     }
@@ -40,30 +42,8 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     reporter.panicOnBuild(`Error while running GraphQL query.`);
     return;
   }
-
-  // Create post detail pages
-  const posts = result.data.postsRemark.edges;
-
-  posts.forEach(({ node }) => {
-    createPage({
-      path: node.frontmatter.slug,
-      component: postTemplate,
-      context: {},
-    });
-  });
-
-  // Extract tag data from query
-  const tags = result.data.tagsGroup.group;
-  // Make tag pages
-  tags.forEach(tag => {
-    createPage({
-      path: `/pensieve/tags/${_.kebabCase(tag.fieldValue)}/`,
-      component: tagTemplate,
-      context: {
-        tag: tag.fieldValue,
-      },
-    });
-  });
+  const tagData = result.data.wpTags.edges;
+  await createTags({ createPage, tagData, tagTemplate });
 };
 
 // https://www.gatsbyjs.org/docs/node-apis/#onCreateWebpackConfig
