@@ -21,9 +21,24 @@ const createTags = async ({ createPage, tagData, tagTemplate }) =>
     ),
   );
 
+const createIndividualBlogPostPages = async ({ createPage, postsData, postTemplate }) =>
+  Promise.all(
+    postsData.map(({ previous, post, next }) =>
+      createPage({
+        path: post.uri,
+        component: postTemplate,
+        context: {
+          id: post.id,
+          previousPostId: previous ? previous.id : null,
+          nextPostId: next ? next.id : null,
+        },
+      }),
+    ),
+  );
 exports.createPages = async ({ actions, graphql, reporter }) => {
   const { createPage } = actions;
   const tagTemplate = path.resolve('src/templates/tag.js');
+  const postTemplate = path.resolve('src/templates/post.js');
 
   const result = await graphql(`
     {
@@ -31,6 +46,24 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
         edges {
           node {
             name
+          }
+        }
+      }
+      allWpPost(sort: { fields: [date], order: DESC }) {
+        edges {
+          previous {
+            id
+          }
+
+          # note: this is a GraphQL alias. It renames "node" to "post" for this query
+          # We're doing this because this "node" is a post! It makes our code more readable further down the line.
+          post: node {
+            id
+            uri
+          }
+
+          next {
+            id
           }
         }
       }
@@ -44,6 +77,9 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   }
   const tagData = result.data.wpTags.edges;
   await createTags({ createPage, tagData, tagTemplate });
+
+  const postsData = result.data.allWpPost.edges;
+  await createIndividualBlogPostPages({ createPage, postsData, postTemplate });
 };
 
 // https://www.gatsbyjs.org/docs/node-apis/#onCreateWebpackConfig
