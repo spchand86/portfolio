@@ -47,7 +47,7 @@ const StyledTagsContainer = styled.main`
 
 const TagTemplate = ({ pageContext, data, location }) => {
   const { tag } = pageContext;
-  const { edges } = data.allMarkdownRemark;
+  const { edges } = data.allWpPost;
 
   return (
     <Layout location={location}>
@@ -56,7 +56,7 @@ const TagTemplate = ({ pageContext, data, location }) => {
       <StyledTagsContainer>
         <span className="breadcrumb">
           <span className="arrow">&larr;</span>
-          <Link to="/pensieve">All memories</Link>
+          <Link to="/pensieve">All blogs</Link>
         </span>
 
         <h1>
@@ -68,11 +68,12 @@ const TagTemplate = ({ pageContext, data, location }) => {
 
         <ul className="fancy-list">
           {edges.map(({ node }) => {
-            const { title, slug, date, tags } = node.frontmatter;
+            const { title, uri, date, tags } = node;
+            const { tagNodes } = tags;
             return (
-              <li key={slug}>
+              <li key={uri}>
                 <h2>
-                  <Link to={slug}>{title}</Link>
+                  <Link to={uri}>{title}</Link>
                 </h2>
                 <p className="subtitle">
                   <time>
@@ -83,11 +84,11 @@ const TagTemplate = ({ pageContext, data, location }) => {
                     })}
                   </time>
                   <span>&nbsp;&mdash;&nbsp;</span>
-                  {tags &&
-                    tags.length > 0 &&
-                    tags.map((tag, i) => (
-                      <Link key={i} to={`/pensieve/tags/${kebabCase(tag)}/`} className="tag">
-                        #{tag}
+                  {tagNodes &&
+                    tagNodes.length > 0 &&
+                    tagNodes.map((tag, i) => (
+                      <Link key={i} to={`/pensieve/tags/${kebabCase(tag.name)}/`} className="tag">
+                        #{tag.name}
                       </Link>
                     ))}
                 </p>
@@ -107,13 +108,20 @@ TagTemplate.propTypes = {
     tag: PropTypes.string.isRequired,
   }),
   data: PropTypes.shape({
-    allMarkdownRemark: PropTypes.shape({
-      totalCount: PropTypes.number.isRequired,
+    allWpPost: PropTypes.shape({
       edges: PropTypes.arrayOf(
         PropTypes.shape({
           node: PropTypes.shape({
-            frontmatter: PropTypes.shape({
-              title: PropTypes.string.isRequired,
+            id: PropTypes.string.isRequired,
+            title: PropTypes.string.isRequired,
+            slug: PropTypes.string.isRequired,
+            date: PropTypes.instanceOf(Date).isRequired,
+            uri: PropTypes.string.isRequired,
+            tags: PropTypes.shape({
+              tagNodes: PropTypes.shape({
+                name: PropTypes.string.isRequired,
+                uri: PropTypes.string.isRequired,
+              }),
             }),
           }),
         }).isRequired,
@@ -135,14 +143,14 @@ export const pageQuery = graphql`
           id
           title
           slug
+          date
+          uri
           tags {
             tagNodes: nodes {
               name
               uri
             }
           }
-          date
-          uri
         }
       }
     }
