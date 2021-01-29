@@ -124,22 +124,25 @@ TagTemplate.propTypes = {
 };
 
 export const pageQuery = graphql`
-  query($tag: String!) {
-    allMarkdownRemark(
+  query MyQuery($tag: String!) {
+    allWpPost(
       limit: 2000
-      sort: { fields: [frontmatter___date], order: DESC }
-      filter: { frontmatter: { tags: { in: [$tag] } } }
+      sort: { fields: date, order: DESC }
+      filter: { tags: { nodes: { elemMatch: { name: { in: [$tag] } } } } }
     ) {
-      totalCount
       edges {
         node {
-          frontmatter {
-            title
-            description
-            date
-            slug
-            tags
+          id
+          title
+          slug
+          tags {
+            tagNodes: nodes {
+              name
+              uri
+            }
           }
+          date
+          uri
         }
       }
     }
