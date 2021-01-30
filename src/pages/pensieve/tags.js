@@ -33,7 +33,7 @@ const StyledTagsContainer = styled.main`
 
 const TagsPage = ({
   data: {
-    allMarkdownRemark: { group },
+    wpTags: { edges },
   },
   location,
 }) => (
@@ -48,10 +48,10 @@ const TagsPage = ({
 
       <h1>Tags</h1>
       <ul className="fancy-list">
-        {group.map(tag => (
-          <li key={tag.fieldValue}>
-            <Link to={`/pensieve/tags/${kebabCase(tag.fieldValue)}/`} className="inline-link">
-              {tag.fieldValue} <span className="count">({tag.totalCount})</span>
+        {edges.map(tag => (
+          <li key={tag.node.name}>
+            <Link to={`/pensieve/tags/${kebabCase(tag.node.name)}/`} className="inline-link">
+              {tag.node.name} <span className="count">({tag.node.count})</span>
             </Link>
           </li>
         ))}
@@ -62,18 +62,13 @@ const TagsPage = ({
 
 TagsPage.propTypes = {
   data: PropTypes.shape({
-    allMarkdownRemark: PropTypes.shape({
-      group: PropTypes.arrayOf(
+    wpTags: PropTypes.shape({
+      edges: PropTypes.arrayOf(
         PropTypes.shape({
-          fieldValue: PropTypes.string.isRequired,
-          totalCount: PropTypes.number.isRequired,
+          name: PropTypes.string.isRequired,
+          count: PropTypes.number.isRequired,
         }).isRequired,
       ),
-    }),
-    site: PropTypes.shape({
-      siteMetadata: PropTypes.shape({
-        title: PropTypes.string.isRequired,
-      }),
     }),
   }),
   location: PropTypes.object,
@@ -83,10 +78,12 @@ export default TagsPage;
 
 export const pageQuery = graphql`
   query {
-    allMarkdownRemark(limit: 2000, filter: { frontmatter: { draft: { ne: true } } }) {
-      group(field: frontmatter___tags) {
-        fieldValue
-        totalCount
+    wpTags: allWpTag {
+      edges {
+        node {
+          name
+          count
+        }
       }
     }
   }
