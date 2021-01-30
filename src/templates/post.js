@@ -146,11 +146,11 @@ PostTemplate.propTypes = {
       featuredImage: PropTypes.object,
 
       tags: PropTypes.shape({
-        tagNodes: PropTypes.shape({
-          name: PropTypes.string.isRequired,
-          length: PropTypes.number.isRequired,
-          map: PropTypes.object,
-        }),
+        tagNodes: PropTypes.arrayOf(
+          PropTypes.shape({
+            name: PropTypes.string.isRequired,
+          }),
+        ),
       }),
     }),
   }),
