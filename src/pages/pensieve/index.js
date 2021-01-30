@@ -118,35 +118,30 @@ const StyledTags = styled.ul`
 `;
 
 const PensievePage = ({ location, data }) => {
-  const posts = data.allMarkdownRemark.edges;
-
+  const posts = data.allWpPost.edges;
+  // Make tag pages
   return (
     <Layout location={location}>
       <Helmet title="Pensieve" />
 
       <StyledMainContainer>
         <header>
-          <h1 className="big-heading">Pensieve</h1>
-          <p className="subtitle">
-            <a href="https://www.wizardingworld.com/writing-by-jk-rowling/pensieve">
-              a collection of memories
-            </a>
-          </p>
+          <h1 className="big-heading">Blog</h1>
+          <p className="subtitle"></p>
         </header>
 
         <StyledGrid>
           <div className="posts">
             {posts.length > 0 &&
               posts.map(({ node }, i) => {
-                const { frontmatter } = node;
-                const { title, description, slug, date, tags } = frontmatter;
+                const { title, description, uri, date, tagNodes } = node;
                 const d = new Date(date);
 
                 return (
                   <StyledPost key={i} tabIndex="0">
                     <StyledPostInner>
                       <header>
-                        <Link to={slug}>
+                        <Link to={uri}>
                           <StyledPostHeader>
                             <StyledFolder>
                               <IconZap />
@@ -159,12 +154,12 @@ const PensievePage = ({ location, data }) => {
                       <footer>
                         <StyledDate>{`${d.toLocaleDateString()}`}</StyledDate>
                         <StyledTags>
-                          {tags.map((tag, i) => (
+                          {tagNodes.map((tag, i) => (
                             <li key={i}>
                               <Link
-                                to={`/pensieve/tags/${kebabCase(tag)}/`}
+                                to={`/pensieve/tags/${kebabCase(tag.name)}/`}
                                 className="inline-link">
-                                #{tag}
+                                #{tag.name}
                               </Link>
                             </li>
                           ))}
@@ -190,21 +185,23 @@ export default PensievePage;
 
 export const pageQuery = graphql`
   {
-    allMarkdownRemark(
-      filter: { fileAbsolutePath: { regex: "/posts/" }, frontmatter: { draft: { ne: true } } }
-      sort: { fields: [frontmatter___date], order: DESC }
-    ) {
+    allWpPost(sort: { order: DESC, fields: date }) {
       edges {
+        previous {
+          id
+        }
         node {
-          frontmatter {
-            title
-            description
-            slug
-            date
-            tags
-            draft
+          id
+          uri
+          slug
+          date
+          tagNodes: tags {
+            nodes {
+              name
+            }
           }
-          html
+          title
+          excerpt
         }
       }
     }
