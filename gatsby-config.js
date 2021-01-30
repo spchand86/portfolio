@@ -12,7 +12,7 @@ module.exports = {
       'Subhaprada Chand is a software engineer specializing in building exceptional websites and highly scalable and fault-tolerant systems.',
     siteUrl: 'https://subhapradachand.com', // No trailing slash allowed!
     image: '/og.png', // Path to your image you placed in the 'static' folder
-    twitterUsername: '@schand8695',
+    twitterUsername: '@spchand8695',
   },
   plugins: [
     `gatsby-plugin-react-helmet`,
