@@ -7,10 +7,10 @@
 const path = require('path');
 const _ = require('lodash');
 
-const createTags = async ({ createPage, tagData, tagTemplate }) =>
+const createTags = async ({ createPage, tagData, tagTemplate }) => {
   Promise.all(
     // Make tag pages
-    tagData.forEach(nodeTag =>
+    tagData.map(nodeTag =>
       createPage({
         path: `/pensieve/tags/${_.kebabCase(nodeTag.node.name)}/`,
         component: tagTemplate,
@@ -20,8 +20,9 @@ const createTags = async ({ createPage, tagData, tagTemplate }) =>
       }),
     ),
   );
+};
 
-const createIndividualBlogPostPages = async ({ createPage, postsData, postTemplate }) =>
+const createIndividualBlogPostPages = async ({ createPage, postsData, postTemplate }) => {
   Promise.all(
     postsData.map(({ previous, post, next }) =>
       createPage({
@@ -35,6 +36,8 @@ const createIndividualBlogPostPages = async ({ createPage, postsData, postTempla
       }),
     ),
   );
+};
+
 exports.createPages = async ({ actions, graphql, reporter }) => {
   const { createPage } = actions;
   const tagTemplate = path.resolve('src/templates/tag.js');

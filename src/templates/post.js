@@ -6,7 +6,6 @@ import kebabCase from 'lodash/kebabCase';
 import { Helmet } from 'react-helmet';
 import styled from 'styled-components';
 import { Layout } from '@components';
-import SEO from '../components/seo';
 import PropTypes from 'prop-types';
 
 const StyledPostContainer = styled.main`
@@ -75,8 +74,6 @@ const PostTemplate = ({ data, location }) => {
               ))}
           </p>
         </StyledPostHeader>
-
-        <SEO title={post.title} description={post.excerpt} />
 
         <article className="blog-post" itemScope itemType="http://schema.org/Article">
           <header>
