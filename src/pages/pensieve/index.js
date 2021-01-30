@@ -135,6 +135,7 @@ const PensievePage = ({ location, data }) => {
             {posts.length > 0 &&
               posts.map(({ node }, i) => {
                 const { title, description, uri, date, tagNodes } = node;
+                const tags = tagNodes.nodes.map(node => node.name);
                 const d = new Date(date);
 
                 return (
@@ -154,12 +155,12 @@ const PensievePage = ({ location, data }) => {
                       <footer>
                         <StyledDate>{`${d.toLocaleDateString()}`}</StyledDate>
                         <StyledTags>
-                          {tagNodes.map((tag, i) => (
+                          {tags.map((tag, i) => (
                             <li key={i}>
                               <Link
-                                to={`/pensieve/tags/${kebabCase(tag.name)}/`}
+                                to={`/pensieve/tags/${kebabCase(tag)}/`}
                                 className="inline-link">
-                                #{tag.name}
+                                #{tag}
                               </Link>
                             </li>
                           ))}
