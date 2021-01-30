@@ -16,7 +16,7 @@ module.exports = {
     },
     {
       name: 'Codepen',
-      url: 'https://codepen.io/spchand86',
+      url: 'https://codepen.io/spchand8',
     },
   ],
 
@@ -34,8 +34,7 @@ module.exports = {
       url: '/#contact',
     },
     {
-      name: 'Resume',
-      url: '/resume.pdf',
+      name: 'resume',
     },
   ],
 
