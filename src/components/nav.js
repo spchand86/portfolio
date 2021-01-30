@@ -180,7 +180,13 @@ const Nav = ({ isHome }) => {
                 navLinks.map(({ url, name }, i) => (
                   <CSSTransition key={i} classNames={fadeDownClass} timeout={timeout}>
                     <li key={i} style={{ transitionDelay: `${isHome ? i * 100 : 0}ms` }}>
-                      <Link to={url}>{name}</Link>
+                      {name !== 'resume' ? (
+                        <Link to={url}>{name}</Link>
+                      ) : (
+                        <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">
+                          Resume
+                        </a>
+                      )}
                     </li>
                   </CSSTransition>
                 ))}
@@ -191,12 +197,8 @@ const Nav = ({ isHome }) => {
             {isMounted && (
               <CSSTransition classNames={fadeDownClass} timeout={timeout}>
                 <div style={{ transitionDelay: `${isHome ? navLinks.length * 100 : 0}ms` }}>
-                  <a
-                    className="resume-button"
-                    href="/resume.pdf"
-                    target="_blank"
-                    rel="noopener noreferrer">
-                    Resume
+                  <a className="resume-button" href="/pensieve" rel="noopener noreferrer">
+                    Blog
                   </a>
                 </div>
               </CSSTransition>
